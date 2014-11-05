@@ -74,8 +74,22 @@ void ofApp::draw(){
 			ofRect(camWidth + i*avePixelSize, j*avePixelSize, avePixelSize, avePixelSize);
 		}	
 	}
+	horiZone(0,camHeight/2,camWidth, camHeight/2 + 50, 8);
 
 //miniTexture.draw(0,camHeight,camWidth, camHeight);
+}
+
+void  ofApp::horiZone(int x1, int y1, int x2, int y2, int steps){
+	int numXpixels = x2 - x1;
+//	int numYpixels = y2 - y1;
+	int stepJump = numXpixels/steps;
+	
+	for(int i = 0; i < steps; i++){
+		int hue = getAverageHue(i*stepJump, y1, (1+i)*stepJump, y2);
+		ofColor c = ofColor::fromHsb(hue, 200, 200);
+		ofSetColor(c);
+		ofRect(i*stepJump, y1, stepJump, y2-y1);
+	}
 }
 
 int ofApp::getAverageHue(int x1, int y1, int x2, int y2){
@@ -92,6 +106,7 @@ int ofApp::getAverageHue(int x1, int y1, int x2, int y2){
 		}	
 	}
 	average = sum/totalPixels;
+	average = (average/36) * 36;
 	return average;
 }
 

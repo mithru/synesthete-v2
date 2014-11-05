@@ -34,5 +34,6 @@ class ofApp : public ofBaseApp{
 		int num_of_sounds;
 
 		ofSoundPlayer sounds[3];
+		void horiZone(int x1, int y1, int x2, int y2, int steps);
 
 };
