@@ -24,11 +24,9 @@ class ofApp : public ofBaseApp{
 		void mouseDragged(int x, int y, int button);
 		void mousePressed(int x, int y, int button);
 		void mouseReleased(int x, int y, int button);
-		void windowResized(int w, int h);
-		void dragEvent(ofDragInfo dragInfo);
-		void gotMessage(ofMessage msg);
 		int getAverageHue(int x1, int y1, int x2, int y2);
 		int getAverageSat(int x1, int y1, int x2, int y2);
+		int getDominantHue(int x1, int y1, int x2, int y2);
 
 		void setMusicRegion(int x1, int y1, int x2, int y2, int numHori, int numVert);
 		void setMusicModeRegion(int x1, int y1, int x2, int y2);

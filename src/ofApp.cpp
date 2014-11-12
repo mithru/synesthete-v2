@@ -56,7 +56,7 @@ void ofApp::draw(){
 	ofSetColor(255);
 	vidGrabber.draw(0,0);
 
-	//debugColors();
+	debugColors();
 	/*
 	int aveSat = getAverageHue(mouseX, mouseY, mouseX+15, mouseY+15);
 	ofSetColor(0);
@@ -302,21 +302,37 @@ void ofApp::mouseReleased(int x, int y, int button){
 	}
 }
 
-//--------------------------------------------------------------
-void ofApp::windowResized(int w, int h){
+int ofApp::getDominantHue(int x1, int y1, int x2, int y2){ 
+	ofPixelsRef pRef = vidGrabber.getPixelsRef();
+	int numXpixels = x2 - x1;
+	int numYpixels = y2 - y1;
+	int totalPixels = numXpixels * numYpixels;
 
+	num_of_hues = 255/hueDegree;
+
+	int weight[num_of_hues];
+
+	for(int i = 0; i < num_of_hues; i++) {
+		weight[i] = 0;
+	}
+
+	for(int i = x1; i<=x2; i++){
+		for(int j = y1; j<=y2; j++){
+			int hue = pRef.getColor(i,j).getHue();
+			hue = (hue/hueDegree);
+			weight[hue] += 1;
+		}	
+	}
+	int currHigh = 0;	
+	int currHighID = 0;
+	for(int i = 0; i < num_of_hues; i++) {
+		if(weight[i] > currHigh){
+			currHigh = weight[i];
+			currHighID = i;
+		}
+	}
+	return currHighID * hueDegree;
 }
-
-//--------------------------------------------------------------
-void ofApp::gotMessage(ofMessage msg){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo){ 
-
-}
-
 
 int ofApp::getAverageHue(int x1, int y1, int x2, int y2){
 	ofPixelsRef pRef = vidGrabber.getPixelsRef();
@@ -328,9 +344,8 @@ int ofApp::getAverageHue(int x1, int y1, int x2, int y2){
 
 	for(int i = x1; i<=x2; i++){
 		for(int j = y1; j<=y2; j++){
-			int hue = 255 + pRef.getColor(i,j).getHue();
+			int hue = pRef.getColor(i,j).getHue();
 			sum += hue;
-			sum -= 255;
 		}	
 	}
 	average = sum/totalPixels;
@@ -411,7 +426,7 @@ void ofApp::debugColors(){
 	for(int i = 0; i < camWidth/avePixelSize; i++) {
 		for(int j = 0; j < camHeight/avePixelSize; j++) {
 			int aveSat = getAverageSat(i*avePixelSize, j*avePixelSize, i*avePixelSize+avePixelSize, j*avePixelSize+avePixelSize);
-			if(aveSat > saturationThreshold){
+			if(aveSat > 0){
 				int aveHue = getAverageHue(i*avePixelSize, j*avePixelSize, i*avePixelSize+avePixelSize, j*avePixelSize+avePixelSize);
 				ofColor c = ofColor::fromHsb(aveHue, 255, 255);
 				ofSetColor(c);
@@ -422,7 +437,5 @@ void ofApp::debugColors(){
 			ofRect(i*avePixelSize, j*avePixelSize, avePixelSize, avePixelSize);		
 		}	
 	}
-
 }
-
 
